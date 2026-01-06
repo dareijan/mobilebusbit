@@ -17,11 +17,11 @@ const Map = () => {
         const aika = Math.floor((tamapaiva - tamavuosi) / 86400000); // Calculate the datamavuosi passed since January 1st (1000 * 60 * 60 * 24 = 86400000)
         const paiva = tamavuosi.getDay();
         const oikeaaika = (paiva === 0) ? 6 : paiva - 1;  // Adjust Sunday (0) to 6 (ISO starts Monday)
-        const opullinenaika = Math.floor((aika + oikeaaika) / 7) + 1;
-		if (opullinenaika % 2 === 0 ) {
-			return "parillinen";
+        const lopullinenaika = Math.floor((aika + oikeaaika) / 7) + 1;
+		if (lopullinenaika % 2 === 0 ) {
+			return "parillinen " + lopullinenaika + " " + oikeaaika + " " + paiva + " " + aika
 		} else {
-			return "pariton";
+			return "pariton " + lopullinenaika + " " + oikeaaika + " " + paiva + " " + aika;
 		}
     }
     
@@ -101,7 +101,7 @@ const Map = () => {
           var datapysakeille = Papa.parse(result.data);       
           for (var i = 0; i < datapysakeille.data.length; i++) {
             var nimi = datapysakeille.data[i][0];
-            var parillisuus = datapysakeille.data[i][1];              
+            var parillisuus =  selvitaParillisuus(paivamaara); /*datapysakeille.data[i][1]; */
             var aika = datapysakeille.data[i][2];
             var lat = datapysakeille.data[i][3];
             var lon = datapysakeille.data[i][4];
