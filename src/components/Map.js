@@ -19,9 +19,9 @@ const Map = () => {
         const oikeaaika = (paiva === 0) ? 6 : paiva - 1;  // Adjust Sunday (0) to 6 (ISO starts Monday)
         const lopullinenaika = Math.floor((aika + oikeaaika) / 7) + 1;
 		if (lopullinenaika % 2 === 0 ) {
-			return "parillinen " + lopullinenaika + " " + oikeaaika + " " + paiva + " " + aika
+			return "parillinen " + lopullinenaika + " " + oikeaaika + " " + paiva + " " + aika + " " + tamavuosi + " " + tamapaiva;
 		} else {
-			return "pariton " + lopullinenaika + " " + oikeaaika + " " + paiva + " " + aika;
+			return "pariton " + lopullinenaika + " " + oikeaaika + " " + paiva + " " + aika + " " + tamavuosi + " " + tamapaiva;
 		}
     }
     
