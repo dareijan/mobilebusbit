@@ -2,36 +2,49 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import L from 'leaflet';
-import bbmarker from './assets/images/busbit.svg';
-import mymarker from './assets/images/circle-solid.svg';
+import tulossabusbitikoni from './assets/images/busbittulossa.svg';
+import mennytbusbitikoni from './assets/images/busbitmennyt.svg';
+import tyhjabusbitikoni from './assets/images/ympyra.svg';
 import * as Papa from 'papaparse';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import moment from 'moment';  
+
 
 const Map = () => {
 
     function selvitaParillisuus(d) {
-        
+        /* 
         const tamapaiva = new Date(d); // Convert input string to Date object
         const tamavuosi = new Date(tamapaiva.getFullYear(), 0, 1); // Get January 1st of the same year
         const aika = Math.floor((tamapaiva - tamavuosi) / 86400000); // Calculate the datamavuosi passed since January 1st (1000 * 60 * 60 * 24 = 86400000)
-        const paiva = tamavuosi.getDay();
-        const oikeaaika = (paiva === 0) ? 6 : paiva - 1;  // Adjust Sunday (0) to 6 (ISO starts Monday)
-        const lopullinenaika = Math.floor((aika + oikeaaika) / 7) + 1;
-		if (lopullinenaika % 2 === 0 ) {
-			return "parillinen " + lopullinenaika + " " + oikeaaika + " " + paiva + " " + aika + " " + tamavuosi + " " + tamapaiva;
-		} else {
-			return "pariton " + lopullinenaika + " " + oikeaaika + " " + paiva + " " + aika + " " + tamavuosi + " " + tamapaiva;
+		if (aika == NaN) { */
+			const lopullinenaika = moment().week();
+			if (lopullinenaika % 2 === 0 ) {
+				return "parillinen";
+			} else {
+				return "pariton";
+			}
+		/*} else {
+			const paiva = tamavuosi.getDay();
+			const oikeaaika = (paiva === 0) ? 6 : paiva - 1;  // Adjust Sunday (0) to 6 (ISO starts Monday)
+			const lopullinenaika = Math.floor((aika + oikeaaika) / 7) + 1;
+			if (lopullinenaika % 2 === 0 ) {
+				return "parillinen " + lopullinenaika + " " + oikeaaika + " " + paiva + " " + aika + " " + tamavuosi + " " + tamapaiva;
+			} else {
+				return "pariton " + lopullinenaika + " " + oikeaaika + " " + paiva + " " + aika + " " + tamavuosi + " " + tamapaiva;
+			}
 		}
+		*/
     }
     
     function selvitaViikonpaiva() {
-        let nyt = new Date();
+        //let nyt = new Date();
+        const days = ['sunnuntai','maanantai','tiistai','keskiviikko','torstai','perjantai'];
+        //return days[nyt.getDay()];
 
-        const days = ['maanantai','tiistai','keskiviikko','torstai','perjantai'];
-
-        return days[nyt.getDay()];
-
+		const nyt = moment().locale('fi');
+		return days[moment().weekday()];
         /*return nyt.toLocaleString('en', {
           timeZone: 'Europe/Helsinki',
           weekday: 'long'
@@ -40,23 +53,39 @@ const Map = () => {
     }
 	
 	
-	function selvitaTuloaika(aika, nyt) {
-		const ajat = aika.split(" ");
-		const tuloaika = aika[0].split(":");
-		const pysakilla = new Date(nyt.getFullYear(), nyt.getMonth(),nyt.getDate(), tuloaika[0], tuloaika[1])
+	function selvitaTuloaika(aika) {
+		
+		const format = 'hh:mm';
+		const nyt = moment();
+		
+		const ajatviikonpaivittain = aika.split(" ");
+		const kellonajat = ajatviikonpaivittain[1];
+		const tuloaika = kellonajat.substring(0,5);		
+		const pysakilla = moment(tuloaika, format);
+		
+		if (nyt.isAfter(pysakilla)) {
+            return false;
+        } else {
+            return true;
+        }	
+		/* const pysakilla = new Date(nyt.getFullYear(), nyt.getMonth(),nyt.getDate(), tuloaika[0], tuloaika[1]) 
 		if (nyt > pysakilla) {
             return true;
         } else {
             return false;
         }		
+		*/
 	}
     
-    function suodata(vuoronparillisuus, vuoronaika) {
-     
-        if (vuoronparillisuus.includes(parillisuus) && vuoronaika.includes(viikonpaiva)) { /*selvitaTuloaika(paiva, vuoronaika)*/
-            return true;
+    function suodata(vuoronparillisuus, vuoronaika) {		
+		if (vuoronparillisuus.includes(parillisuus) && vuoronaika.includes(viikonpaiva)) {
+			if (selvitaTuloaika(vuoronaika)) {
+            	return "tulossa";
+			} else {
+				return "mennyt";
+			}
         } else {
-            return false;
+            return "";
         }
     }
     
@@ -101,7 +130,7 @@ const Map = () => {
           var datapysakeille = Papa.parse(result.data);       
           for (var i = 0; i < datapysakeille.data.length; i++) {
             var nimi = datapysakeille.data[i][0];
-            var parillisuus =  selvitaParillisuus(paivamaara); /*datapysakeille.data[i][1]; */
+            var parillisuus = datapysakeille.data[i][1];
             var aika = datapysakeille.data[i][2];
             var lat = datapysakeille.data[i][3];
             var lon = datapysakeille.data[i][4];
@@ -126,18 +155,25 @@ const Map = () => {
     witamapaivah: '100%',
   };
 
-  const bbIcon = new L.Icon({
-    iconUrl: bbmarker,
-    iconRetinaUrl: bbmarker,
+  const tulossaikoni = new L.Icon({
+    iconUrl: tulossabusbitikoni,
+    iconRetinaUrl: tulossabusbitikoni,
     popupAnchor: [0, 0],
-    iconSize: [23, 23],
+    iconSize: [35, 35],
   });
 
-  const myIcon = new L.Icon({
-    iconUrl: mymarker,
-    iconRetinaUrl: mymarker,
+  const mennytikoni = new L.Icon({
+    iconUrl: mennytbusbitikoni,
+    iconRetinaUrl: mennytbusbitikoni,
     popupAnchor: [0, 0],
-    iconSize: [12, 12],
+    iconSize: [35, 35],
+  });
+
+  const tyhjaikoni = new L.Icon({
+    iconUrl: tyhjabusbitikoni,
+    iconRetinaUrl: tyhjabusbitikoni,
+    popupAnchor: [0, 0],
+    iconSize: [10, 10],
   });
 
   const styles = {
@@ -166,27 +202,33 @@ const Map = () => {
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
       />
       {rows.map((row, index) => {
-			  const point = [row[4],row[5]];
-          if (suodata(row[2],row[3])) {
-
+	      const point = [row[4],row[5]];
+		  const ikonintyyppi = suodata(row[2],row[3]);
+          if (ikonintyyppi === "tulossa") {
             return (
-            <Marker position={point} key={row[0]} icon={bbIcon} >
+            <Marker position={point} key={row[0]} icon={tulossaikoni} >
               <Popup>
               <span>{row[1]} <br/>{row[3]} {row[2]}  </span>
               </Popup>
             </Marker>
             )
+          } else if (ikonintyyppi === "mennyt") {
+            return (
+            <Marker position={point} key={row[0]} icon={mennytikoni} >
+              <Popup>
+              <span>{row[1]} <br/>{row[3]} {row[2]}  </span>
+              </Popup>
+            </Marker>
+            )		
           } else {
             return (
-            <Marker position={point} key={row[0]} icon={myIcon} >
+            <Marker position={point} key={row[0]} icon={tyhjaikoni} >
               <Popup>
               <span>{row[1]} <br/>{row[3]} {row[2]}  </span>
               </Popup>
             </Marker>
             )
-
-          }
-    
+          }    
       })
         };          
       </MapContainer>
