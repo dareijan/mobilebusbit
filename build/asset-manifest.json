@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/mobilebusbit/static/css/main.ee07e4ef.css",
-    "main.js": "/mobilebusbit/static/js/main.3711f41b.js",
+    "main.js": "/mobilebusbit/static/js/main.224e6328.js",
     "static/media/busbit.svg": "/mobilebusbit/static/media/busbit.f3b3464123fe19614ad5b18a1fc20954.svg",
     "index.html": "/mobilebusbit/index.html",
     "static/media/circle-solid.svg": "/mobilebusbit/static/media/circle-solid.7e0520270bbdc5c996e055b0fc470d78.svg",
     "main.ee07e4ef.css.map": "/mobilebusbit/static/css/main.ee07e4ef.css.map",
-    "main.3711f41b.js.map": "/mobilebusbit/static/js/main.3711f41b.js.map"
+    "main.224e6328.js.map": "/mobilebusbit/static/js/main.224e6328.js.map"
   },
   "entrypoints": [
     "static/css/main.ee07e4ef.css",
-    "static/js/main.3711f41b.js"
+    "static/js/main.224e6328.js"
   ]
 }
