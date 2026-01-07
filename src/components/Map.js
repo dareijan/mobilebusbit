@@ -13,68 +13,46 @@ import moment from 'moment';
 
 const Map = () => {
 
+  /* oletusnäkymä tämä päivä
+  painikkeet 
+  Ma Ti Ke To Pe
+  (mikä päivä nyt on)
+  (aseta tämäpäivä globaaliin objektiin)
+  -luo päivämäärät; luo 6 päivää eteenpäin; jos viikonloppu, ota ne päivät pois
+  -kun valitaan päivä, aseta se globaaliin objektiin ja renderöi kartta uudelleen
+  */
+ 
+
+
+
     function selvitaParillisuus(d) {
-        /* 
-        const tamapaiva = new Date(d); // Convert input string to Date object
-        const tamavuosi = new Date(tamapaiva.getFullYear(), 0, 1); // Get January 1st of the same year
-        const aika = Math.floor((tamapaiva - tamavuosi) / 86400000); // Calculate the datamavuosi passed since January 1st (1000 * 60 * 60 * 24 = 86400000)
-		if (aika == NaN) { */
-			const lopullinenaika = moment().week();
-			if (lopullinenaika % 2 === 0 ) {
-				return "parillinen";
-			} else {
-				return "pariton";
-			}
-		/*} else {
-			const paiva = tamavuosi.getDay();
-			const oikeaaika = (paiva === 0) ? 6 : paiva - 1;  // Adjust Sunday (0) to 6 (ISO starts Monday)
-			const lopullinenaika = Math.floor((aika + oikeaaika) / 7) + 1;
-			if (lopullinenaika % 2 === 0 ) {
-				return "parillinen " + lopullinenaika + " " + oikeaaika + " " + paiva + " " + aika + " " + tamavuosi + " " + tamapaiva;
-			} else {
-				return "pariton " + lopullinenaika + " " + oikeaaika + " " + paiva + " " + aika + " " + tamavuosi + " " + tamapaiva;
-			}
+		const lopullinenaika = moment().week();
+		if (lopullinenaika % 2 === 0 ) {
+			return "parillinen";
+		} else {
+			return "pariton";
 		}
-		*/
     }
     
     function selvitaViikonpaiva() {
-        //let nyt = new Date();
         const days = ['sunnuntai','maanantai','tiistai','keskiviikko','torstai','perjantai'];
-        //return days[nyt.getDay()];
-
 		const nyt = moment().locale('fi');
 		return days[moment().weekday()];
-        /*return nyt.toLocaleString('en', {
-          timeZone: 'Europe/Helsinki',
-          weekday: 'long'
-        });
-        */
     }
 	
 	
-	function selvitaTuloaika(aika) {
-		
+	function selvitaTuloaika(aika) {		
 		const format = 'hh:mm';
-		const nyt = moment();
-		
+		const nyt = moment();		
 		const ajatviikonpaivittain = aika.split(" ");
 		const kellonajat = ajatviikonpaivittain[1];
 		const tuloaika = kellonajat.substring(0,5);		
-		const pysakilla = moment(tuloaika, format);
-		
+		const pysakilla = moment(tuloaika, format);		
 		if (nyt.isAfter(pysakilla)) {
             return false;
         } else {
             return true;
-        }	
-		/* const pysakilla = new Date(nyt.getFullYear(), nyt.getMonth(),nyt.getDate(), tuloaika[0], tuloaika[1]) 
-		if (nyt > pysakilla) {
-            return true;
-        } else {
-            return false;
-        }		
-		*/
+        }
 	}
     
     function suodata(vuoronparillisuus, vuoronaika) {		
@@ -95,6 +73,14 @@ const Map = () => {
     
     const [data, setPysakit] = useState([]);
 
+    const [paivat, setPaivat] = useState({
+      maanantai: [],
+      tiistai:  [],
+      keskiviikko:  [],
+      torstai:  [],
+      perjantai:  []
+    });
+
     var paiva = new Date();
     
     const kuukausi = paiva.getMonth() + 1;
@@ -102,14 +88,6 @@ const Map = () => {
     const paivamaara = kuukausi + "." + paiva.getDate() + "." + paiva.getFullYear(); 
     
     const parillisuus = selvitaParillisuus(paivamaara);
-        
-    /*
-    Date.prototype.addMins = function (m) {
-        this.setTime(this.getTime() + (m * 60 * 1000));
-        return this;
-    }    
-    paiva.addMMins(15);
-    */
     
     const viikonpaiva = selvitaViikonpaiva();
 
@@ -125,7 +103,7 @@ const Map = () => {
             headers: {
               'Access-Control-Allow-Origin': true,
             },
-            });
+          });
 
           var datapysakeille = Papa.parse(result.data);       
           for (var i = 0; i < datapysakeille.data.length; i++) {
@@ -142,31 +120,26 @@ const Map = () => {
           }
         fetchData();
       }, []);
-  /*
-    {data.map((dataa) => {
-      console.log(dataa.nimi);
-    })}
-  */
  
-  const position = [62.235851235588875, 25.76126531656598]; // [-1.295761267252445, 36.8605899810791];
+  const position = [62.235851235588875, 25.76126531656598];
 
   const style = {
-    height: '80vh',
-    witamapaivah: '100%',
+    height: '100vh',/* '80vh',*/
+    width: '100%'
   };
 
   const tulossaikoni = new L.Icon({
     iconUrl: tulossabusbitikoni,
     iconRetinaUrl: tulossabusbitikoni,
     popupAnchor: [0, 0],
-    iconSize: [35, 35],
+    iconSize: [40, 40],
   });
 
   const mennytikoni = new L.Icon({
     iconUrl: mennytbusbitikoni,
     iconRetinaUrl: mennytbusbitikoni,
     popupAnchor: [0, 0],
-    iconSize: [35, 35],
+    iconSize: [40, 40],
   });
 
   const tyhjaikoni = new L.Icon({
@@ -229,8 +202,7 @@ const Map = () => {
             </Marker>
             )
           }    
-      })
-        };          
+      })};          
       </MapContainer>
     </div>
   </div>
