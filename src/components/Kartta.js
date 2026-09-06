@@ -60,17 +60,17 @@ const Kartta = () => {
   }
 
   function suodata(vuoronparillisuus, vuoronaika) {		
-    if(valitunpaivanparillisuus) {
-      if (vuoronparillisuus.includes(valitunpaivanparillisuus) && vuoronaika.includes(valitunpaivanviikonpaiva)) {
-        if (selvitaTuloaika(vuoronaika)) {
-          return "tulossa";
+      if(valitunpaivanparillisuus) {
+        if (vuoronparillisuus.includes(valitunpaivanparillisuus) && vuoronaika.includes(valitunpaivanviikonpaiva)) {
+          if (selvitaTuloaika(vuoronaika)) {
+            return "tulossa";
+          } else {
+            return "mennyt";
+          }
         } else {
-          return "mennyt";
+            return "";
         }
-      } else {
-          return "";
       }
-    }
   }
 
   const [state, setState] = useState({});
@@ -231,33 +231,41 @@ const Kartta = () => {
           description="Autot kartalla!"
         />
         {rows.map((row, index) => {
-          const point = [row[4],row[5]];
-          const ikonintyyppi = suodata(row[2],row[3]);
-          if (ikonintyyppi === "tulossa") {
-            return (
-              <Marker position={point} key={row[0]} icon={tulossaikoni} >
-                <Popup>
-                <span>{row[1]} <br/>{row[3]} {row[2]}  </span>
-                </Popup>
-              </Marker>
-            )
-          } else if (ikonintyyppi === "mennyt") {
-            return (
-              <Marker position={point} key={row[0]} icon={mennytikoni} >
-                <Popup>
-                <span>{row[1]} <br/>{row[3]} {row[2]}  </span>
-                </Popup>
-              </Marker>
-            )		
-          } else {
-            return (
-              <Marker position={point} key={row[0]} icon={tyhjaikoni} >
-                <Popup>
-                <span>{row[1]} <br/>{row[3]} {row[2]}  </span>
-                </Popup>
-              </Marker>
-            )
-          }})
+
+          if(!(row[4] === undefined || row[5] === undefined || row[2] === undefined)) {
+            console.log(row[4] + " " + row[5]  )
+            const point = [row[4],row[5]];
+            const ikonintyyppi = suodata(row[2],row[3]);
+            if (ikonintyyppi === "tulossa") {
+              return (
+                <Marker position={point} key={row[0]} icon={tulossaikoni} >
+                  <Popup>
+                  <span>{row[1]} <br/>{row[3]} {row[2]}  </span>
+                  </Popup>
+                </Marker>
+              )
+            } else if (ikonintyyppi === "mennyt") {
+              return (
+                <Marker position={point} key={row[0]} icon={mennytikoni} >
+                  <Popup>
+                  <span>{row[1]} <br/>{row[3]} {row[2]}  </span>
+                  </Popup>
+                </Marker>
+              )		
+            } else {
+              return (
+                <Marker position={point} key={row[0]} icon={tyhjaikoni} >
+                  <Popup>
+                  <span>{row[1]} <br/>{row[3]} {row[2]}  </span>
+                  </Popup>
+                </Marker>
+              )
+            }
+
+          }
+
+        }
+        )
         };          
       </MapContainer>
       </div>
