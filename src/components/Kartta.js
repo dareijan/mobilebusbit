@@ -63,9 +63,9 @@ const Kartta = () => {
       if(valitunpaivanparillisuus) {
         if (vuoronparillisuus.includes(valitunpaivanparillisuus) && vuoronaika.includes(valitunpaivanviikonpaiva)) {
           if (selvitaTuloaika(vuoronaika)) {
-            return "tulossa";
-          } else {
             return "mennyt";
+          } else {
+            return "tulossa";
           }
         } else {
             return "";
