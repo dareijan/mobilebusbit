@@ -13,3 +13,10 @@ npm install --ignore-scripts
 
 npm install eslint@8 --save-dev
 npm start
+
+Api key:
+
+https://github.com/r-spatial/mapview/issues/520
+
+add it to your tile URL as a key parameter:
+https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=YOUR_KEY

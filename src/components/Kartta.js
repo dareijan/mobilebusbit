@@ -155,7 +155,6 @@ const Kartta = () => {
 
   const increaseCount = () => {
     let tamapaiva = moment(valittupaiva).clone().add(1,'days');
-    console.log(tamapaiva.toString());
     setValitunpaivanparillisuus(selvitaParillisuus(moment(tamapaiva).locale('fi')));
     setValitunpaivanviikonpaiva(selvitaViikonpaiva(tamapaiva));	  
     return setValittupaiva(tamapaiva);
@@ -163,7 +162,6 @@ const Kartta = () => {
 
   const decreaseCount = () => {
     let tamapaiva = moment(valittupaiva).clone().subtract(1,'days');
-    console.log(tamapaiva.toString());
     setValitunpaivanparillisuus(selvitaParillisuus(moment(tamapaiva).locale('fi')));
     setValitunpaivanviikonpaiva(selvitaViikonpaiva(tamapaiva));	  	  
     return setValittupaiva(tamapaiva);
@@ -223,7 +221,7 @@ const Kartta = () => {
       <MapContainer center={position} zoom={13} scrollWheelZoom={true} style={style}> 
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=cb1_4fi2_1_b8385662a2b5322845b747b4"
         />
         <Info
           title={"Mobilebusbit 1.0 by Dareijan"}
@@ -233,7 +231,6 @@ const Kartta = () => {
         {rows.map((row, index) => {
 
           if(!(row[4] === undefined || row[5] === undefined || row[2] === undefined)) {
-            console.log(row[4] + " " + row[5]  )
             const point = [row[4],row[5]];
             const ikonintyyppi = suodata(row[2],row[3]);
             if (ikonintyyppi === "tulossa") {
